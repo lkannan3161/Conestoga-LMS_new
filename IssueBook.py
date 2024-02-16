@@ -10,7 +10,7 @@ import sys
 
 db = LMS("lms.db")
 
-settings_file_path = "/Users/layak/Downloads/LMS-main/config/settings.json"
+settings_file_path = "/Users/layak/PycharmProjects/Conestoga-LMS/config/settings.json"
 
 with open(settings_file_path, "r") as settings_file:
     settings = json.load(settings_file)
