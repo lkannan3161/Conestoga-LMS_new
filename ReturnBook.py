@@ -6,22 +6,28 @@ import datetime
 import json
 import os
 import sys
+import requests
 
 db = LMS("lms.db")
-settings_file_path = "/Users/layak/Library/Group Containers/group.com.docker/settings.json"
 
-with open(settings_file_path, "r") as settings_file:
-    settings = json.load(settings_file)
+settings_file_url = "https://raw.githubusercontent.com/lkannan3161/Conestoga-LMS_new/main/config/settings.json"
+
+response = requests.get(settings_file_url)
+if response.status_code == 200:
+    settings = response.json()
+else:
+    print("Failed to fetch settings from GitHub. Using default settings.")
+    # Define default settings here if needed
+
 
 class ReturnBook(customtkinter.CTkToplevel):
     def __init__(self, master=None):
         super().__init__(master)
         self.title("Library Management System")
-        self.minsize(400,250)
-        self.maxsize(400,250)
+        self.minsize(400, 250)
+        self.maxsize(400, 250)
         self.geometry('400x250')
-        self.charge_per_day = settings["charge_per_day"]
-        
+        self.charge_per_day = settings.get("charge_per_day", 1)  # Default to 1 if not found
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
         heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")
         

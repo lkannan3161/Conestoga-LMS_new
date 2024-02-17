@@ -7,23 +7,28 @@ import datetime
 import json
 import os
 import sys
+import requests
 
 db = LMS("lms.db")
 
-settings_file_path = "/Users/layak/PycharmProjects/Conestoga-LMS/config/settings.json"
+settings_file_url = "https://raw.githubusercontent.com/lkannan3161/Conestoga-LMS_new/main/config/settings.json"
 
-with open(settings_file_path, "r") as settings_file:
-    settings = json.load(settings_file)
+response = requests.get(settings_file_url)
+if response.status_code == 200:
+    settings = response.json()
+else:
+    print("Failed to fetch settings from GitHub. Using default settings.")
+    # Define default settings here if needed
 
 class IssueBook(customtkinter.CTkToplevel):
     def __init__(self, master=None):
         super().__init__(master)
         self.title("Library Management System")
-        self.minsize(400,250)
-        self.maxsize(400,250)
+        self.minsize(400, 250)
+        self.maxsize(400, 250)
         self.geometry('300x250')
-        self.no_expiry_days = settings["issue_duration"]
-        
+        self.no_expiry_days = settings.get("issue_duration", 30)  # Default to 30 days if not found
+
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
         heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")
         
