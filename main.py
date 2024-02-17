@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox
 import customtkinter
 from AddBook import *
 from EditBook import *
@@ -10,7 +9,6 @@ from ReturnBook import *
 from BookReport import *
 import os
 import sys
-import tkinter as tk
 from tkinter import filedialog, messagebox
 
 class LMSApp(tk.Tk):
