@@ -1,17 +1,15 @@
+import tkinter
 import tkinter as tk
-import customtkinter
-import requests
+from tkinter import filedialog
 
 from AddBook import *
-from EditBook import *
+from BookReport import *
 from DeleteBook import *
-from ViewBooks import *
+from EditBook import *
 from IssueBook import *
 from ReturnBook import *
-from BookReport import *
-import os
-import sys
-from tkinter import filedialog, messagebox
+from ViewBooks import *
+from tkinter import messagebox
 
 class LMSApp(tk.Tk):
     def __init__(self):
@@ -91,6 +89,7 @@ class LMSApp(tk.Tk):
 
        # watermark = tk.Label(master=self, text="Conestoga LMS")
        # watermark.place(relx=0.7, rely=0.9, anchor='sw')
+
     def add_book_win(self):
         app = AddBook(self)
         app.focus()
@@ -133,7 +132,72 @@ class LMSApp(tk.Tk):
         except:
             showerror(title="Error", message="File is not in correct form or file not selected")
 
-
 if __name__ == '__main__':
-    app = LMSApp()
-    app.mainloop()
+    window = tkinter.Tk()
+    window.title("Library Management System")
+    window.geometry('800x600')
+    window.configure(bg='black')
+
+    def login():
+        usernameList = ["admin", "student"]
+        passwordList = ["admin", "student"]
+
+        loginSuccess = 0
+        for username in usernameList:
+            indexUser = usernameList.index(username)
+            if username_entry.get()==username and password_entry.get()==passwordList[indexUser]:
+                # messagebox.showinfo(title="Login Successful!", message="You successfully logged in.")
+                loginSuccess = 1
+                break
+            else:
+                loginSuccess = 0
+
+        if loginSuccess == 1:
+            window.destroy()
+            app = LMSApp()
+            app.mainloop()
+        else:
+            messagebox.showerror(title="Error", message="Invalid login.")
+
+
+    frame = tkinter.Frame(bg='black')
+
+    def download_image(url, file_path):
+        response = requests.get(url)
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+
+
+    # Example usage
+    url = 'https://raw.githubusercontent.com/lkannan3161/Conestoga-LMS_new/main/Logo.png'
+    local_file_path = 'Logo.png'  # Specify the local file path where you want to save the image
+    download_image(url, local_file_path)
+    # Logo label
+    window.logo_image = tk.PhotoImage(file=local_file_path)
+    window.logo_image = window.logo_image.subsample(2)  # Adjust logo size
+    window.logo_label = tk.Label(window, image=window.logo_image, bg="black")
+    window.logo_label.pack(pady=20)
+
+    login_label = tkinter.Label(frame, text="Library Management System", bg='#000000', fg="white", font=("Robot", 25, "bold"))
+
+    username_label = tkinter.Label(frame, text="Username", bg='#000000', fg="white", font=("Robot", 16, 'bold'))
+    password_label = tkinter.Label(frame, text="Password", bg='#000000', fg="white", font=("Robot", 16, 'bold'))
+
+    username_entry = customtkinter.CTkEntry(frame, font=("Robot", 16), width=300)
+    password_entry = customtkinter.CTkEntry(frame, show="*", font=("Robot", 16), width=300)
+
+    login_button = customtkinter.CTkButton(frame, text="Login", font=customtkinter.CTkFont(family="Verdana",size=16, weight="bold"), command=login)
+
+    login_label.grid(row=0, column=0, columnspan=2, sticky="news", pady=40)
+    username_label.grid(row=1, column=0)
+    username_entry.grid(row=1, column=1, pady=20)
+    password_label.grid(row=2, column=0)
+    password_entry.grid(row=2, column=1, pady=20)
+    login_button.grid(row=3, column=0, columnspan=2, pady=30)
+
+    frame.pack()
+    window.mainloop()
+
+    # app = LMSApp()
+    # app.mainloop()
+
