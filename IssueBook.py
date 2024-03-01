@@ -27,6 +27,7 @@ class IssueBook(customtkinter.CTkToplevel):
         self.minsize(400, 250)
         self.maxsize(400, 250)
         self.geometry('300x250')
+        self.attributes("-topmost", True)
         self.no_expiry_days = settings.get("issue_duration", 30)  # Default to 30 days if not found
 
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)

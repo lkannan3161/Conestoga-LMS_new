@@ -16,6 +16,7 @@ class BookReport(customtkinter.CTkToplevel):
         self.minsize(400,300)
         self.maxsize(400,300)
         self.geometry('400x300')
+        self.attributes("-topmost", True)
         
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
         heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")

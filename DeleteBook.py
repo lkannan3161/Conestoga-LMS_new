@@ -14,6 +14,7 @@ class DeleteBook(customtkinter.CTkToplevel):
         self.minsize(400,250)
         self.maxsize(400,250)
         self.geometry('400x250')
+        self.attributes("-topmost", True)
         
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
         heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")
@@ -34,14 +35,19 @@ class DeleteBook(customtkinter.CTkToplevel):
         delete_book_btn.pack(padx=10,pady=10)
     
     def delete_book(self):
-        id_lists = db.all_book_id()
-        new_id_lists = [t[0] for t in id_lists]
-        if int(self.book_id_input.get()) in new_id_lists:
-            res = db.delete_book(self.book_id_input.get())
-            if res == 'deleted':
-                showinfo(title="Deleted",message=f"Book ID : {self.book_id_input.get()}, deleted successfully.")
-                self.book_id_input.delete(0,'end')
+
+        if self.book_id_input.get().isdigit():
+            id_lists = db.all_book_id()
+            new_id_lists = [t[0] for t in id_lists]
+            if int(self.book_id_input.get()) in new_id_lists:
+                res = db.delete_book(self.book_id_input.get())
+                if res == 'deleted':
+                    showinfo(title="Deleted",message=f"Book ID : {self.book_id_input.get()}, deleted successfully.")
+                    self.book_id_input.delete(0,'end')
+                else:
+                    showerror(title="Error",message=f"Book ID : {self.book_id_input.get()}, not deleted. Try Again!")
             else:
-                showerror(title="Error",message=f"Book ID : {self.book_id_input.get()}, not deleted. Try Again!")
+                showerror(title="Not Found",message="Book not found")
+
         else:
-            showerror(title="Not Found",message="Book not found")
+            showerror(title="Book ID", message="Please enter a correct Book ID")

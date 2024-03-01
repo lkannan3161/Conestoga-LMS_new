@@ -15,7 +15,8 @@ class LMSApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Library Management System")
-        self.geometry('800x600')
+        self.state('zoomed')
+        # self.geometry('1280x800')
         self.configure(bg="black")  # Set background color to black
 
         def download_image(url, file_path):
@@ -135,7 +136,8 @@ class LMSApp(tk.Tk):
 if __name__ == '__main__':
     window = tkinter.Tk()
     window.title("Library Management System")
-    window.geometry('800x600')
+    window.state('zoomed')
+    # window.geometry('1280x768')
     window.configure(bg='black')
 
     def login():

@@ -15,6 +15,7 @@ class EditBook(customtkinter.CTkToplevel):
         self.minsize(500,490)
         self.maxsize(500,490)
         self.geometry('500x490')
+        self.attributes("-topmost", True)
         
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
         heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")
@@ -86,19 +87,23 @@ class EditBook(customtkinter.CTkToplevel):
         update_new_book_btn.grid(column=2,row=6,padx=10,pady=5,ipadx=10,ipady=10)
     
     def search_book_detail(self):
-        book_id = self.book_id_input1.get()
-        book_id = int(book_id)
-        book_details = db.select_book_detail(book_id)
-        if book_details != None:
-            self.id_var.set(book_details[0])
-            self.name_var.set(book_details[1])
-            self.author_var.set(book_details[2])
-            self.edition_var.set(book_details[3])
-            self.price_var.set(book_details[4])
-            self.purchase_dt_var.set(book_details[5])
-            self.main_frame.pack(padx=10,pady=10, ipadx=5, ipady=5,fill="both",expand=True)
+        if self.book_id_input1.get().isdigit():
+            id_lists = db.all_book_id()
+            book_id = self.book_id_input1.get()
+            book_id = int(book_id)
+            book_details = db.select_book_detail(book_id)
+            if book_details != None:
+                self.id_var.set(book_details[0])
+                self.name_var.set(book_details[1])
+                self.author_var.set(book_details[2])
+                self.edition_var.set(book_details[3])
+                self.price_var.set(book_details[4])
+                self.purchase_dt_var.set(book_details[5])
+                self.main_frame.pack(padx=10,pady=10, ipadx=5, ipady=5,fill="both",expand=True)
+            else:
+                showerror(title="Not Found", message="Book Not Found")
         else:
-            showerror(title="Not Found", message="Book Not Found")
+            showerror(title="Book ID", message="Please enter a correct Book ID")
         
     
     def update_book(self):

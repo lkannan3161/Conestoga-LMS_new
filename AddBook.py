@@ -15,6 +15,7 @@ class AddBook(customtkinter.CTkToplevel):
         self.minsize(500,400)
         self.maxsize(500,400)
         self.geometry('500x400')
+        self.attributes("-topmost", True)
         dt = datetime.datetime.now()
         dt_year = dt.year
         
@@ -30,41 +31,41 @@ class AddBook(customtkinter.CTkToplevel):
         main_frame.columnconfigure(1, weight=1)
         main_frame.columnconfigure(2, weight=1)
         
-        book_id_lbel = customtkinter.CTkLabel(master=main_frame,text="Book ID",)
+        book_id_lbel = customtkinter.CTkLabel(master=main_frame,text="Book ID *",)
         book_id_lbel.grid(column=1,row=0,padx=5, pady=5)
         
         self.book_id_input = customtkinter.CTkEntry(master=main_frame,width=200)
         self.book_id_input.grid(column=2,row=0,padx=5, pady=5)
         
-        book_nme_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Name",)
+        book_nme_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Name *",)
         book_nme_lbel.grid(column=1,row=1,padx=5, pady=5)
         
         self.book_nme_input = customtkinter.CTkEntry(master=main_frame,width=200)
         self.book_nme_input.grid(column=2,row=1,padx=5, pady=5)
         
-        book_author_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Author",)
+        book_author_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Author *",)
         book_author_lbel.grid(column=1,row=2,padx=5, pady=5)
         
         self.book_author_input = customtkinter.CTkEntry(master=main_frame,width=200)
         self.book_author_input.grid(column=2,row=2,padx=5, pady=5)
         
-        book_edition_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Edition",)
+        book_edition_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Edition *",)
         book_edition_lbel.grid(column=1,row=3,padx=5, pady=5)
         
         self.book_edition_input = customtkinter.CTkEntry(master=main_frame,width=200)
         self.book_edition_input.grid(column=2,row=3,padx=5, pady=5)
         
-        book_price_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Price",)
+        book_price_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Price *",)
         book_price_lbel.grid(column=1,row=4,padx=5, pady=5)
         
         self.book_price_input = customtkinter.CTkEntry(master=main_frame,width=200)
         self.book_price_input.grid(column=2,row=4,padx=5, pady=5)
         
-        purchase_dt_lbel = customtkinter.CTkLabel(master=main_frame,text="Purchased Date",)
+        purchase_dt_lbel = customtkinter.CTkLabel(master=main_frame,text="Purchased Date *",)
         purchase_dt_lbel.grid(column=1,row=5,padx=5, pady=5)
         
         self.purch_dt_var = customtkinter.StringVar(self)
-        self.purchase_dt = DateEntry(main_frame, width=10,borderwidth=2, year=dt_year, textvariable=self.purch_dt_var)
+        self.purchase_dt = DateEntry(main_frame, width=10,borderwidth=2, year=dt_year, textvariable=self.purch_dt_var, maxdate=dt)
         self.purchase_dt.grid(column=2,row=5,padx=5, pady=5)
         
         add_new_book_btn = customtkinter.CTkButton(master=main_frame,text="Add Book", font=customtkinter.CTkFont(family="Verdana",size=16, weight="bold"),command=self.save_new_book)
@@ -77,6 +78,13 @@ class AddBook(customtkinter.CTkToplevel):
         book_edition = self.book_edition_input.get()
         book_price = self.book_price_input.get()
         purchase_dt = self.purch_dt_var.get()
+        if not book_id.isdigit():
+            showerror(title="Book ID", message="Please enter a correct Book ID")
+        if book_author.isdigit():
+            showerror(title="Book Author", message="Please enter a correct Book Author")
+        if not book_price.isdigit():
+            showerror(title="Book Price", message="Please enter a correct Book Price")
+
         if book_id != "" and book_nme != "" and book_author != "" and book_edition != "" and book_price != "" and purchase_dt != "":
             data = (
                 book_id,

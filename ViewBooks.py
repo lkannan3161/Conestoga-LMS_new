@@ -17,6 +17,7 @@ class ViewBooks(customtkinter.CTkToplevel):
         self.minsize(1300,450)
         self.maxsize(1300,450)
         self.geometry('1300x450')
+        self.attributes("-topmost", True)
         
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
         heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")

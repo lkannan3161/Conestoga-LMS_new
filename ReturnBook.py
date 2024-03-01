@@ -27,6 +27,7 @@ class ReturnBook(customtkinter.CTkToplevel):
         self.minsize(400, 250)
         self.maxsize(400, 250)
         self.geometry('400x250')
+        self.attributes("-topmost", True)
         self.charge_per_day = settings.get("charge_per_day", 1)  # Default to 1 if not found
         heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
         heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")
