@@ -17,6 +17,7 @@ class LMSApp(tk.Tk):
         self.title("Library Management System")
         self.state('zoomed')
         # self.geometry('1280x800')
+        # self.attributes("-fullscreen",True)
         self.configure(bg="black")  # Set background color to black
 
         def download_image(url, file_path):
@@ -78,8 +79,8 @@ class LMSApp(tk.Tk):
                              command=self.edit_book_win, bg="white", fg="black", padx=20, pady=10)
         button_7.pack(fill="x", pady=10)
 
-        button_8 = tk.Button(master=right_frame, text="Import Student",
-                             command=self.import_student, bg="white", fg="black", padx=20, pady=10)
+        button_8 = tk.Button(master=right_frame, text="Exit",
+                             command=self.exit_screen, bg="white", fg="black", padx=20, pady=10)
         button_8.pack(fill="x", pady=10)
 
         footer_frame = tk.Frame(master=self, bg="black")
@@ -114,10 +115,11 @@ class LMSApp(tk.Tk):
     def return_book_win(self):
         app = ReturnBook(self)
         app.focus()
-
     def book_report_win(self):
         app = BookReport(self)
         app.focus()
+    def exit_screen(self):
+        tkinter.Tk.destroy(self)
 
     def import_student(self):
         try:
@@ -138,6 +140,7 @@ if __name__ == '__main__':
     window.title("Library Management System")
     window.state('zoomed')
     # window.geometry('1280x768')
+    # window.attributes("-fullscreen", True)
     window.configure(bg='black')
 
     def login():
@@ -168,7 +171,6 @@ if __name__ == '__main__':
         response = requests.get(url)
         with open(file_path, 'wb') as file:
             file.write(response.content)
-
 
     # Example usage
     url = 'https://raw.githubusercontent.com/lkannan3161/Conestoga-LMS_new/main/Logo.png'
@@ -202,4 +204,3 @@ if __name__ == '__main__':
 
     # app = LMSApp()
     # app.mainloop()
-
