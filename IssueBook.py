@@ -5,6 +5,17 @@ from tkinter.messagebox import showerror, showinfo
 import datetime
 import requests
 
+db = LMS("lms.db")
+
+settings_file_url = "https://raw.githubusercontent.com/lkannan3161/Conestoga-LMS_new/main/config/settings.json"
+
+response = requests.get(settings_file_url)
+if response.status_code == 200:
+    settings = response.json()
+else:
+    print("Using default settings.")
+    # Define default settings here if needed
+
 class IssueBook(customtkinter.CTkToplevel):
     def __init__(self, master=None, settings=None):
         super().__init__(master)

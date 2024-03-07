@@ -5,7 +5,6 @@ from database import LMS
 import datetime
 import requests
 
-db = LMS("lms.db")
 
 settings_file_url = "https://raw.githubusercontent.com/lkannan3161/Conestoga-LMS_new/main/config/settings.json"
 
@@ -13,8 +12,13 @@ response = requests.get(settings_file_url)
 if response.status_code == 200:
     settings = response.json()
 else:
+
     print("Failed to fetch settings from GitHub. Using default settings.")
     settings = {}  # Define default settings here if needed
+
+    print("Using default settings.")
+    # Define default settings here if needed
+
 
 
 class ReturnBook(customtkinter.CTkToplevel):
