@@ -17,7 +17,7 @@ response = requests.get(settings_file_url)
 if response.status_code == 200:
     settings = response.json()
 else:
-    print("Failed to fetch settings from GitHub. Using default settings.")
+    print("Using default settings.")
     # Define default settings here if needed
 
 class IssueBook(customtkinter.CTkToplevel):
