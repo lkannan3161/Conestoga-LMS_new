@@ -6,7 +6,7 @@ import datetime
 import requests
 
 
-settings_file_url = "https://raw.githubusercontent.com/lkannan3161/Conestoga-LMS_new/main/config/settings.json"
+settings_file_url = "https://github.com/lkannan3161/Conestoga-LMS_new/blob/main/settings.json"
 
 response = requests.get(settings_file_url)
 if response.status_code == 200:
