@@ -15,8 +15,6 @@ else:
     print("Using default settings.")
     # Define default settings here if needed
 
-
-
 class ReturnBook(customtkinter.CTkToplevel):
     def __init__(self, master=None):
         super().__init__(master)

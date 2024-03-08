@@ -15,7 +15,6 @@ if response.status_code == 200:
 else:
     print("Using default settings.")
     # Define default settings here if needed
-
 class IssueBook(customtkinter.CTkToplevel):
     def __init__(self, master=None, settings=None):
         super().__init__(master)
