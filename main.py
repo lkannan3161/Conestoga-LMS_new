@@ -1,6 +1,7 @@
 import tkinter
 import tkinter as tk
 from tkinter import filedialog
+from tkinter.constants import RIGHT
 
 from AddBook import *
 from BookReport import *
@@ -35,8 +36,11 @@ class LMSApp(tk.Tk):
         self.logo_label = tk.Label(self, image=self.logo_image, bg="black")
         self.logo_label.pack(pady=20)
 
+        # self.exit_button = tk.Button(master=self, text="Exit", padx=20, pady=10, bg="red3")
+        # self.exit_button.place(x=1450, y=20)
+
         heading_frame = tk.Frame(master=self, bg="black")
-        heading_frame.pack(padx=10, pady=10, ipadx=20, ipady=5, fill="x", anchor="n")
+        heading_frame.pack(padx=1, pady=1, ipadx=5, ipady=2, fill="x", anchor="n")
 
         label = tk.Label(master=heading_frame, text="Library Management System",
                          font=("Robot", 25, "bold"), bg="black", fg="white")
@@ -79,12 +83,18 @@ class LMSApp(tk.Tk):
                              command=self.edit_book_win, bg="white", fg="black", padx=20, pady=10)
         button_7.pack(fill="x", pady=10)
 
-        button_8 = tk.Button(master=right_frame, text="Exit",
-                             command=self.exit_screen, bg="white", fg="black", padx=20, pady=10)
-        button_8.pack(fill="x", pady=10)
+        button_Import_Student = tk.Button(master=right_frame, text="Import Student",
+                             command=self.import_student, bg="white", fg="black", padx=20, pady=10)
+        button_Import_Student.pack(fill="x", pady=10)
+
+        exit_button = tk.Button(master=right_frame, text="Exit", padx=20, pady=10, bg="chartreuse3", command=self.exit_screen)
+        exit_button.pack(side = RIGHT, pady=1)
+
+        # exit_button = tk.Button(master=self, text="Exit", padx=20, pady=10, bg="red3")
+        # exit_button.pack(side="right", fill="y", ipadx=0, pady=5, padx=20)
 
         footer_frame = tk.Frame(master=self, bg="black")
-        footer_frame.pack(fill="x", pady=10)
+        footer_frame.pack(fill="x", pady=5)
 
         dev_by_label = tk.Label(master=footer_frame, text="@Copyrights reserved April 2024", bg="black", fg="white")
         dev_by_label.pack()
