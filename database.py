@@ -192,3 +192,7 @@ class LMS:
         self.cur.execute(sql, data)
         self.conn.commit()
         return self.cur.lastrowid
+
+    def get_book_by_id(self, book_id):
+        self.cur.execute("SELECT * FROM books WHERE book_id = ?", (book_id,))
+        return self.cur.fetchone()

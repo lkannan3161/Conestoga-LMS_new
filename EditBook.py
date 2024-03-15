@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import customtkinter
 import tkinter
 from database import LMS
@@ -5,6 +7,7 @@ from tkinter.messagebox import showerror, showwarning, showinfo
 from tkcalendar import DateEntry
 import os
 import sys
+import re
 
 db = LMS("lms.db")
 
@@ -113,6 +116,23 @@ class EditBook(customtkinter.CTkToplevel):
         book_edition = self.edition_var.get()
         book_price = self.price_var.get()
         purchase_dt = self.purchase_dt_var.get()
+
+        # Validate book price format
+        if not self.validate_price(book_price):
+            showerror(title="Invalid Price", message="Please enter a valid price.")
+            return
+
+        # Validate special characters in all fields
+        fields = [book_nme, book_author, book_edition,book_price]
+        if not self.validate_special_characters(fields):
+            showerror(title="Invalid Input", message="Special characters are not allowed.")
+            return
+
+        # Validate future date
+        if self.is_future_date(purchase_dt):
+            showerror(title="Invalid Date", message="Future dates are not allowed.")
+            return
+
         if book_id != "" and book_nme != "" and book_author != "" and book_edition != "" and book_price != "" and purchase_dt != "":
             data = (
                 book_id,
@@ -123,7 +143,7 @@ class EditBook(customtkinter.CTkToplevel):
                 purchase_dt,
                 book_id
             )
-            
+
             res = db.update_book_details(data)
             if res != None or res != '':
                 showinfo(title="Saved",message="Book updated successfully.")
@@ -131,5 +151,28 @@ class EditBook(customtkinter.CTkToplevel):
                 showerror(title="Not Saved",message="Something went wrong. Please try again...")
         else:
             showerror(title="Empty Fields",message="Please fill all the details then submit!")
-    
-    
+
+    def validate_price(self, price):
+        try:
+            float(price)
+            return True
+        except ValueError:
+            return False
+
+    def validate_special_characters(self, fields):
+        for field in fields:
+            if not re.match(r'^\d+(\.\d+)?$', field):
+                return False
+        return True
+
+    def is_future_date(self, date_str):
+        try:
+            selected_date = datetime.strptime(date_str, "%m/%d/%y").date()
+            today_date = datetime.now().date()
+            print("Selected Date:", selected_date)
+            print("Today's Date:", today_date)
+            is_future = selected_date > today_date
+            print("Is Future Date:", is_future)
+            return is_future
+        except ValueError:
+            return False

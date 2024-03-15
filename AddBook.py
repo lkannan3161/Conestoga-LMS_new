@@ -70,7 +70,8 @@ class AddBook(customtkinter.CTkToplevel):
         
         add_new_book_btn = customtkinter.CTkButton(master=main_frame,text="Add Book", font=customtkinter.CTkFont(family="Verdana",size=16, weight="bold"),command=self.save_new_book)
         add_new_book_btn.grid(column=2,row=6,padx=10,pady=5,ipadx=10,ipady=10)
-    
+
+
     def save_new_book(self):
         book_id = self.book_id_input.get()
         book_nme = self.book_nme_input.get()
@@ -78,12 +79,26 @@ class AddBook(customtkinter.CTkToplevel):
         book_edition = self.book_edition_input.get()
         book_price = self.book_price_input.get()
         purchase_dt = self.purch_dt_var.get()
+
+        # Check if book ID already exists
+        existing_book = db.get_book_by_id(book_id)
+        if existing_book:
+            showerror(title="Duplicate Book ID", message="Book ID already exists")
+            return
         if not book_id.isdigit():
             showerror(title="Book ID", message="Please enter a correct Book ID")
-        if book_author.isdigit():
+        if not self.validate_input(book_nme):
+            showerror(title="Book Name", message="Please enter a correct Book Name")
+            return
+        if not self.validate_input(book_author):
             showerror(title="Book Author", message="Please enter a correct Book Author")
-        if not book_price.isdigit():
+            return
+        if not self.validate_input(book_edition):
+            showerror(title="Book Edition", message="Please enter a correct Book Edition")
+            return
+        if not self.validate_input(book_price, allow_decimal=True):
             showerror(title="Book Price", message="Please enter a correct Book Price")
+            return
 
         if book_id != "" and book_nme != "" and book_author != "" and book_edition != "" and book_price != "" and purchase_dt != "":
             data = (
@@ -109,3 +124,10 @@ class AddBook(customtkinter.CTkToplevel):
                 showerror(title="Not Saved",message="Something went wrong. Please try again...")
         else:
             showerror(title="Empty Fields",message="Please fill all the details then submit!")
+
+    def validate_input(self, value, allow_decimal=False):
+        # Function to validate text input, allowing only letters, digits, and optionally a decimal point
+        if allow_decimal:
+            return all(char.isalnum() or char == '.' or char.isspace() for char in value)
+        else:
+            return all(char.isalnum() or char.isspace() for char in value)
