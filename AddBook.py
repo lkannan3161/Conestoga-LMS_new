@@ -1,5 +1,5 @@
 import customtkinter
-import tkinter
+import tkinter as tk
 from database import LMS
 from tkinter.messagebox import showerror, showwarning, showinfo
 from tkcalendar import DateEntry
@@ -7,70 +7,68 @@ import datetime
 import os
 import sys
 
-db = LMS("lms.db")
-class AddBook(customtkinter.CTkToplevel):
+db= LMS("lms.db")
+class AddBook(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
-        self.title("Library Management System")
-        self.minsize(500,400)
-        self.maxsize(500,400)
-        self.geometry('500x400')
-        self.attributes("-topmost", True)
-        dt = datetime.datetime.now()
-        dt_year = dt.year
-        
-        heading_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
-        heading_frame.pack(padx=10,pady=10, ipadx=20, ipady=5,fill="x",anchor="n")
-        
-        label = customtkinter.CTkLabel(master=heading_frame, text="Add New Book",font=customtkinter.CTkFont(family="Robot",size=25, weight="bold"))
+        self.title("Add New Book")
+        self.geometry("600x500")
+        self.configure(bg="black")  # Set background color
+        self.setup_ui()
+
+    def setup_ui(self):
+        # Define colors
+        bg_color = "black"
+        fg_color = "white"
+        button_bg_color = "white"  # Button background color
+        button_fg_color = "black"  # Button foreground color
+
+        # Create and configure widgets
+        heading_frame = tk.Frame(self, bg=bg_color)
+        heading_frame.pack(padx=10, pady=10, ipadx=20, ipady=5, fill="x", anchor="n")
+
+        label = tk.Label(heading_frame, text="Add New Book", font=("Robot", 25, "bold"), bg=bg_color, fg=fg_color)
         label.pack(ipady=10)
-        
-        main_frame = customtkinter.CTkFrame(master=self,corner_radius=10)
-        main_frame.pack(padx=10,pady=10, ipadx=5, ipady=5,fill="both",expand=True)
-        
+
+        main_frame = tk.Frame(self, bg=bg_color)
+        main_frame.pack(padx=10, pady=10, ipadx=5, ipady=5, fill="both", expand=True)
+
         main_frame.columnconfigure(1, weight=1)
         main_frame.columnconfigure(2, weight=1)
-        
-        book_id_lbel = customtkinter.CTkLabel(master=main_frame,text="Book ID *",)
-        book_id_lbel.grid(column=1,row=0,padx=5, pady=5)
-        
-        self.book_id_input = customtkinter.CTkEntry(master=main_frame,width=200)
-        self.book_id_input.grid(column=2,row=0,padx=5, pady=5)
-        
-        book_nme_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Name *",)
-        book_nme_lbel.grid(column=1,row=1,padx=5, pady=5)
-        
-        self.book_nme_input = customtkinter.CTkEntry(master=main_frame,width=200)
-        self.book_nme_input.grid(column=2,row=1,padx=5, pady=5)
-        
-        book_author_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Author *",)
-        book_author_lbel.grid(column=1,row=2,padx=5, pady=5)
-        
-        self.book_author_input = customtkinter.CTkEntry(master=main_frame,width=200)
-        self.book_author_input.grid(column=2,row=2,padx=5, pady=5)
-        
-        book_edition_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Edition *",)
-        book_edition_lbel.grid(column=1,row=3,padx=5, pady=5)
-        
-        self.book_edition_input = customtkinter.CTkEntry(master=main_frame,width=200)
-        self.book_edition_input.grid(column=2,row=3,padx=5, pady=5)
-        
-        book_price_lbel = customtkinter.CTkLabel(master=main_frame,text="Book Price *",)
-        book_price_lbel.grid(column=1,row=4,padx=5, pady=5)
-        
-        self.book_price_input = customtkinter.CTkEntry(master=main_frame,width=200)
-        self.book_price_input.grid(column=2,row=4,padx=5, pady=5)
-        
-        purchase_dt_lbel = customtkinter.CTkLabel(master=main_frame,text="Purchased Date *",)
-        purchase_dt_lbel.grid(column=1,row=5,padx=5, pady=5)
-        
-        self.purch_dt_var = customtkinter.StringVar(self)
-        self.purchase_dt = DateEntry(main_frame, width=10,borderwidth=2, year=dt_year, textvariable=self.purch_dt_var, maxdate=dt)
-        self.purchase_dt.grid(column=2,row=5,padx=5, pady=5)
-        
-        add_new_book_btn = customtkinter.CTkButton(master=main_frame,text="Add Book", font=customtkinter.CTkFont(family="Verdana",size=16, weight="bold"),command=self.save_new_book)
-        add_new_book_btn.grid(column=2,row=6,padx=10,pady=5,ipadx=10,ipady=10)
 
+        # Labels
+        labels = ["Book ID", "Book Name", "Book Author", "Book Edition", "Book Price"]
+        for i, label_text in enumerate(labels, start=1):
+            label = tk.Label(main_frame, text=f"{label_text} *", bg=bg_color, fg=fg_color)
+            label.grid(column=1, row=i, padx=5, pady=5, sticky="e")
+            label.configure(font=("Robot", 12, "normal"))
+
+        # Entry fields
+        self.book_id_input = tk.Entry(main_frame, width=30)
+        self.book_id_input.grid(column=2, row=1, padx=5, pady=5)
+        self.book_nme_input = tk.Entry(main_frame, width=30)
+        self.book_nme_input.grid(column=2, row=2, padx=5, pady=5)
+        self.book_author_input = tk.Entry(main_frame, width=30)
+        self.book_author_input.grid(column=2, row=3, padx=5, pady=5)
+        self.book_edition_input = tk.Entry(main_frame, width=30)
+        self.book_edition_input.grid(column=2, row=4, padx=5, pady=5)
+        self.book_price_input = tk.Entry(main_frame, width=30)
+        self.book_price_input.grid(column=2, row=5, padx=5, pady=5)
+
+        # Purchased Date
+        purchase_dt_label = tk.Label(main_frame, text="Purchased Date *", bg=bg_color, fg=fg_color)
+        purchase_dt_label.grid(column=1, row=6, padx=5, pady=5, sticky="e")
+        purchase_dt_label.configure(font=("Robot", 12, "normal"))
+        dt = datetime.datetime.now()
+        dt_year = dt.year
+        self.purch_dt_var = tk.StringVar(self)
+        self.purchase_dt = DateEntry(main_frame, width=30, borderwidth=2, year=dt_year, textvariable=self.purch_dt_var)
+        self.purchase_dt.grid(column=2, row=6, padx=5, pady=5)
+
+        # Add Book Button
+        add_new_book_btn = tk.Button(main_frame, text="Add Book", font=("Verdana", 16, "bold" ), bg=button_bg_color,
+                                     fg=button_fg_color, command=self.save_new_book)
+        add_new_book_btn.grid(column=2, row=7, padx=10, pady=5, ipadx=10, ipady=10)
 
     def save_new_book(self):
         book_id = self.book_id_input.get()
@@ -131,3 +129,7 @@ class AddBook(customtkinter.CTkToplevel):
             return all(char.isalnum() or char == '.' or char.isspace() for char in value)
         else:
             return all(char.isalnum() or char.isspace() for char in value)
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = AddBook(root)
+    app.mainloop()
