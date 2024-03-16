@@ -159,12 +159,13 @@ class EditBook(customtkinter.CTkToplevel):
         except ValueError:
             return False
 
+
+
     def validate_special_characters(self, fields):
         for field in fields:
-            if not re.match(r'^\d+(\.\d+)?$', field):
+            if not re.match(r'^[a-zA-Z0-9\s\-\'\.]+$', field):
                 return False
         return True
-
     def is_future_date(self, date_str):
         try:
             selected_date = datetime.strptime(date_str, "%m/%d/%y").date()
