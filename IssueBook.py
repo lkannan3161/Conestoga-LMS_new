@@ -4,17 +4,36 @@ from database import LMS
 from tkinter.messagebox import showerror, showinfo
 import datetime
 import requests
+import json
 
 db = LMS("lms.db")
 
-settings_file_url = "https://github.com/lkannan3161/Conestoga-LMS_new/blob/main/settings.json"
+settings_web_url= "https://github.com/lkannan3161/Conestoga-LMS_new/blob/main/settings.json"
 
-response = requests.get(settings_file_url)
-if response.status_code == 200:
+try:
+    # Attempt to fetch settings from the web URL
+    response = requests.get(settings_web_url)
+    response.raise_for_status()  # Raise an error for bad response status codes
     settings = response.json()
-else:
-    print("Using default settings.")
-    # Define default settings here if needed
+    print("Settings loaded successfully from web.")
+except Exception as e:
+    print(f"Error fetching settings from web URL: {e}")
+    print("Attempting to load settings from local file...")
+
+    # Define the path to your local settings.json file
+    settings_file_path = "settings.json"
+
+    try:
+        # Attempt to open and read the local settings file
+        with open(settings_file_path, "r") as file:
+            settings = json.load(file)
+        print("Settings loaded successfully from local file.")
+    except FileNotFoundError:
+        print(f"Settings file '{settings_file_path}' not found. Using default settings.")
+        settings = {}
+    except json.decoder.JSONDecodeError:
+        print(f"Error decoding JSON in '{settings_file_path}'. Using default settings.")
+        settings = {}
 class IssueBook(customtkinter.CTkToplevel):
     def __init__(self, master=None, settings=None):
         super().__init__(master)
@@ -115,10 +134,3 @@ if response.status_code == 200:
     settings = response.json()
 else:
     settings = {}  # Define default settings here if needed
-
-# Create LMS database instance
-db = LMS("lms.db")
-
-if __name__ == "__main__":
-    app = IssueBook(settings=settings)
-    app.mainloop()
