@@ -34,14 +34,15 @@ except Exception as e:
     except json.decoder.JSONDecodeError:
         print(f"Error decoding JSON in '{settings_file_path}'. Using default settings.")
         settings = {}
-class IssueBook(customtkinter.CTkToplevel):
+class IssueBook(tk.Toplevel):
     def __init__(self, master=None, settings=None):
         super().__init__(master)
-        self.title("Library Management System")
+        self.title("Issue Book")
         self.minsize(400, 250)
         self.maxsize(400, 250)
         self.geometry('300x250')
         self.attributes("-topmost", True)
+        self.configure(bg="black")
 
         self.settings = settings
         self.no_expiry_days = getattr(self.settings, "get", lambda key, default: default)("issue_duration", 30)
@@ -49,15 +50,14 @@ class IssueBook(customtkinter.CTkToplevel):
 
         self.setup_ui()
 
-    def setup_ui(self):
-        heading_frame = customtkinter.CTkFrame(master=self, corner_radius=10)
+    def setup_ui(self, bg_color=None):
+        heading_frame = customtkinter.CTkFrame(master=self, corner_radius=10, bg_color="black", fg_color="black")
         heading_frame.pack(padx=10, pady=10, ipadx=20, ipady=5, fill="x", anchor="n")
 
-        label = customtkinter.CTkLabel(master=heading_frame, text="Issue Book",
-                                       font=customtkinter.CTkFont(family="Robot", size=25, weight="bold"))
+        label = tk.Label(heading_frame, text="Return Book", font=("Robot", 25, "bold"), bg=bg_color, fg=fg_color)
         label.pack(ipady=10)
 
-        main_frame = customtkinter.CTkFrame(master=self, corner_radius=10)
+        main_frame = customtkinter.CTkFrame(master=self, corner_radius=10, bg_color="black", fg_color="black")
         main_frame.pack(padx=10, pady=10, ipadx=5, ipady=5, fill="both", expand=True)
 
         main_frame.columnconfigure(1, weight=1)

@@ -1,142 +1,62 @@
-import customtkinter
+# Assuming the database operations are correctly implemented in database.py
 import tkinter as tk
 from tkinter.messagebox import showerror, showinfo, askyesno
-from database import LMS
+from tkinter import ttk
+from tkcalendar import DateEntry
 import datetime
-import requests
-import json
+from database import LMS
 
 db = LMS("lms.db")
-settings_web_url = "https://github.com/lkannan3161/Conestoga-LMS_new/blob/main/settings.json"
 
-try:
-    # Attempt to fetch settings from the web URL
-    response = requests.get(settings_web_url)
-    response.raise_for_status()  # Raise an error for bad response status codes
-    settings = response.json()
-    print("Settings loaded successfully from web.")
-except Exception as e:
-    print(f"Error fetching settings from web URL: {e}")
-    print("Attempting to load settings from local file...")
-
-    # Define the path to your local settings.json file
-    settings_file_path = "settings.json"
-
-    try:
-        # Attempt to open and read the local settings file
-        with open(settings_file_path, "r") as file:
-            settings = json.load(file)
-        print("Settings loaded successfully from local file.")
-    except FileNotFoundError:
-        print(f"Settings file '{settings_file_path}' not found. Using default settings.")
-        settings = {}
-    except json.decoder.JSONDecodeError:
-        print(f"Error decoding JSON in '{settings_file_path}'. Using default settings.")
-        settings = {}
-
-class ReturnBook(customtkinter.CTkToplevel):
+class ReturnBook(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
-        self.title("Library Management System")
-        self.minsize(400, 250)
-        self.maxsize(400, 250)
-        self.geometry('400x250')
-        self.attributes("-topmost", True)
+        self.title("Return Book")
+        self.geometry("600x400")
+        self.configure(bg="black")  # Set background color
+        self.setup_ui()
 
-        self.charge_per_day = settings.get("charge_per_day", 1)  # Default to 1 if not found
+    def setup_ui(self):
+        # Define colors
+        bg_color = "black"
+        fg_color = "white"
+        button_bg_color = "white"  # Button background color
+        button_fg_color = "black"  # Button foreground color
 
-        heading_frame = customtkinter.CTkFrame(master=self, corner_radius=10)
+        # Create and configure widgets
+        heading_frame = tk.Frame(self, bg=bg_color)
         heading_frame.pack(padx=10, pady=10, ipadx=20, ipady=5, fill="x", anchor="n")
 
-        label = customtkinter.CTkLabel(master=heading_frame, text="Return Book",
-                                       font=customtkinter.CTkFont(family="Robot", size=25, weight="bold"))
+        label = tk.Label(heading_frame, text="Return Book", font=("Robot", 25, "bold"), bg=bg_color, fg=fg_color)
         label.pack(ipady=10)
 
-        main_frame = customtkinter.CTkFrame(master=self, corner_radius=10)
-        main_frame.pack(padx=10, pady=10, ipadx=5, ipady=5, fill="both", expand=True)
+        main_frame = tk.Frame(self, bg=bg_color)
+        main_frame.pack(padx=15, pady=15, ipadx=5, ipady=5, fill="both", expand=True)
 
-        book_id_label = customtkinter.CTkLabel(master=main_frame, text="Book ID",
-                                               font=customtkinter.CTkFont(family="Verdana", size=16, weight="normal"))
-        book_id_label.pack(pady=10)
+        main_frame.columnconfigure(1, weight=1)
 
-        self.book_id_var = customtkinter.StringVar(self)
-        self.book_id_input = customtkinter.CTkEntry(master=main_frame, width=200, textvariable=self.book_id_var)
-        self.book_id_input.pack(padx=5, pady=5)
+        # Search Entry
+        search_label = tk.Label(main_frame, text="Search:", bg=bg_color, fg=fg_color)
+        search_label.grid(column=1, row=0, padx=5, pady=5, sticky="e")
 
-        return_book_btn = customtkinter.CTkButton(master=main_frame, text="Return Book", command=self.return_book)
-        return_book_btn.pack(padx=10, pady=5)
+        # Combobox for search options
+        self.search_option_var = tk.StringVar(self)
+        self.search_option_var.set("Book Name")  # Default search option
+        search_option_combobox = ttk.Combobox(main_frame, textvariable=self.search_option_var, values=["Book Name", "Author", "Status"])
+        search_option_combobox.grid(column=2, row=0, padx=5, pady=5)
 
-    def return_book(self):
-        book_id = self.book_id_var.get()
+        # Search Entry
+        self.search_var = tk.StringVar(self)
+        search_entry = tk.Entry(main_frame, width=30, textvariable=self.search_var)
+        search_entry.grid(column=3, row=0, padx=5, pady=5)
 
-        if book_id:
-            book_id = int(book_id)
+        # Treeview/Listview
+        self.tree = ttk.Treeview(main_frame, columns=('Book ID', 'Title', 'Author', 'Status'), selectmode="browse")
+        self.tree.grid(column=1, row=1, columnspan=3, padx=5, pady=5, sticky="nsew")
 
-            if book_id in self.all_book_id():
-                status = 'issued'
-                if status in db.select_book_status(book_id):
-                    book_detl = db.select_issued_book_det(book_id)
+        self.tree.heading('#0', text='Book ID')
+        self.tree.heading('#1', text='Title')
+        self.tree.heading('#2', text='Author')
+        self.tree.heading('#3', text='Status')
 
-                    std_exp_dt = datetime.datetime.strptime(book_detl[2], "%Y-%m-%d %H:%M:%S")
-                    if std_exp_dt < datetime.datetime.now():
-                        fine = self.total_fine(std_exp_dt)
-                        conf = askyesno(title="Fine Confirmation",
-                                        message=f"Student is fined, {fine[0]} for {fine[1]} days extra. Is Student submitted fine?")
-                        if conf:
-                            self.save_fine_details(book_detl[0], book_detl[1], book_detl[2], fine)
-                            self.return_book_func(book_id)
-                        else:
-                            misl_conf = askyesno(title="Miscellaneous",
-                                                 message="Do you want to put this book in Miscellaneous type?")
-                            if misl_conf:
-                                try:
-                                    db.update_book_status(book_id, 'miscellaneous')
-                                    db.move_to_miscellaneous(book_id)
-                                    showinfo(title='Success', message='Successfully moved in miscellaneous section.')
-                                except:
-                                    showerror(title='Server Error', message='Something went wrong. Try Again!')
-                            else:
-                                showerror(title="Error - fine", message="Please take the fine!")
-                    else:
-                        self.return_book_func(book_id)
-
-                else:
-                    showerror(title="Not Issued", message="Given book is not issued to anyone.")
-            else:
-                showerror(title="Not Found", message="No any book with given id.")
-        else:
-            showerror(title="Incomplete Information", message="Please enter Book ID.")
-
-    def all_book_id(self):
-        return [i[0] for i in db.all_book_id()]
-
-    def return_book_func(self, book_id):
-        res1 = db.return_book(book_id)
-        res2 = db.update_book_status(book_id, "available")
-        if res1 == "returned":
-            showinfo(title="Book Returned", message=f"Book ID - {book_id}, returned to library successfully!")
-        else:
-            showerror(title="ERROR", message="Something went wrong! Try Again....")
-
-    def total_fine(self, exp_dt):
-        delta = datetime.datetime.now() - exp_dt
-        total_fine = delta.days * self.charge_per_day
-        return total_fine, delta.days
-
-    def save_fine_details(self, book_id, student_id, issued_dt, fine):
-        dt = datetime.datetime.now()
-        std_dt = dt.isoformat(' ', 'seconds')
-        data = (
-            book_id,
-            student_id,
-            issued_dt,
-            std_dt,
-            fine[0],
-            fine[1]
-        )
-        res = db.save_fine_detail(data)
-
-
-if __name__ == "__main__":
-    app = ReturnBook()
-    app.mainloop()
+        self.tree

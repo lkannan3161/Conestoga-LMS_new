@@ -16,20 +16,25 @@ class LMS:
         self.cur.execute(sql, data)
         self.conn.commit()
         return self.cur.lastrowid
-    
-    
+
     def add_new_student(self, xl_file):
         wb = openpyxl.load_workbook(xl_file)
         sheet = wb['Sheet1']
         for row in sheet.rows:
             dt = [cell.value for cell in row]
-            sql = '''INSERT INTO student (id,name,class)
-            VALUES(?,?,?) '''
-            self.cur.execute(sql, dt)
+            try:
+                # Attempt to convert ID to integer
+                dt[0] = int(dt[0]) if dt[0] is not None else None
+                # Insert data into the database
+                sql = '''INSERT INTO student (id,name,class)
+                VALUES(?,?,?) '''
+                self.cur.execute(sql, dt)
+            except ValueError:
+                # Handle invalid integer values here (e.g., log the error, skip the record, etc.)
+                print(f"Invalid ID value: {dt[0]}")
         self.conn.commit()
         return self.cur.lastrowid
-    
-    
+
     def delete_book(self, book_id):
         """
         Delete a book by book id
@@ -196,3 +201,6 @@ class LMS:
     def get_book_by_id(self, book_id):
         self.cur.execute("SELECT * FROM books WHERE book_id = ?", (book_id,))
         return self.cur.fetchone()
+
+    def search_books(self, book_id):
+        pass
